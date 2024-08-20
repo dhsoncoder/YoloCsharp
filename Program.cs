@@ -30,9 +30,24 @@ class Program
         using var results = session.Run(inputs);
         var outputTensor = results.First(x => x.Name == "output0").AsTensor<float>();
 
-        // Xử lý đầu ra để vẽ bounding boxes
+        // Chuyển đổi output tensor thành mảng và in ra từng giá trị
         var outputData = outputTensor.ToArray();
+        for (int i = 0; i < 120; i += 12)
+        {
+            Console.WriteLine($"Block {i / 12}:");
+            for (int j = 0; j < 12; j++)
+            {
+                Console.WriteLine($"Value[{i + j}] = {outputData[i + j]}");
+            }
+            Console.WriteLine();
+        }
+
+
+        // Xử lý đầu ra để vẽ bounding boxes
+
         var boxes = ExtractBoundingBoxes(outputData, 640, 640); // Extract bounding boxes
+
+
 
         // Vẽ bounding boxes lên ảnh
         DrawBoundingBoxes(imagePath, boxes, outputImagePath);
@@ -62,20 +77,7 @@ class Program
         var tensor = new DenseTensor<float>(data, new int[] { 1, 3, height, width });
         return tensor;
     }
-    private static void DrawBoundingBoxes(string imagePath, (Rectangle, float)[] boxes, string outputImagePath)
-    {
-        using var image = new Bitmap(imagePath);
-        using var graphics = Graphics.FromImage(image);
-        var pen = new Pen(Color.Red, 2);
 
-        foreach (var (box, confidence) in boxes)
-        {
-            graphics.DrawRectangle(pen, box);
-            graphics.DrawString($"{confidence:0.00}", new Font("Arial", 12), Brushes.Red, box.X, box.Y - 20);
-        }
-
-        image.Save(outputImagePath, ImageFormat.Jpeg);
-    }
 
     private static (Rectangle, float)[] ExtractBoundingBoxes(float[] outputData, int width, int height)
     {
@@ -95,5 +97,20 @@ class Program
             boxes[i] = (box, confidence);
         }
         return boxes;
+    }
+
+    private static void DrawBoundingBoxes(string imagePath, (Rectangle, float)[] boxes, string outputImagePath)
+    {
+        using var image = new Bitmap(imagePath);
+        using var graphics = Graphics.FromImage(image);
+        var pen = new Pen(Color.Red, 2);
+
+        foreach (var (box, confidence) in boxes)
+        {
+            graphics.DrawRectangle(pen, box);
+            graphics.DrawString($"{confidence:0.00}", new Font("Arial", 12), Brushes.Red, box.X, box.Y - 20);
+        }
+
+        image.Save(outputImagePath, ImageFormat.Jpeg);
     }
 }
