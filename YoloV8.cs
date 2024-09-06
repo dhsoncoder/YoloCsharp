@@ -176,19 +176,16 @@ namespace YoloCSharp
 
             // Xác định số lượng hàng và cột của dữ liệu đầu ra
             var shape = outputData.shape;
-            int rows = shape[0];      
-            Console.WriteLine("Row: " + rows);
+            int rows = shape[0];
             int cols = shape[1];
             int count = 0;
-          
             for (int i = 0; i < rows; i++)
             {
                 // Extract the current row
-                //var row = outputData[i, ":"];
-
+                var row = outputData[i, ":"];
 
                 // Confidence score
-                //float confidence = row[4].GetValue<float>();
+                float confidence = row[4].GetValue<float>();
 
 
                 // Find class with the highest score
@@ -197,7 +194,7 @@ namespace YoloCSharp
 
                 for (int j = 4; j < cols; j++)
                 {
-                    float score = outputData[i,j].GetValue<float>();
+                    float score = row[j].GetValue<float>();
                     if (score > maxScore)
                     {
                         maxScore = score;
@@ -205,14 +202,14 @@ namespace YoloCSharp
                     }
                 }
 
-                if (maxScore >= confidenceThres)
+                if (maxScore >= 0.5f)
                 {
                     count++;
                     // Compute bounding box coordinates
-                    float x = outputData[i, 0].GetValue<float>();
-                    float y = outputData[i, 1].GetValue<float>();
-                    float w = outputData[i, 2].GetValue<float>();
-                    float h = outputData[i, 3].GetValue<float>();
+                    float x = row[0].GetValue<float>();
+                    float y = row[1].GetValue<float>();
+                    float w = row[2].GetValue<float>();
+                    float h = row[3].GetValue<float>();
 
                     int left = (int)((x - w / 2) * xFactor);
                     int top = (int)((y - h / 2) * yFactor);
@@ -223,7 +220,6 @@ namespace YoloCSharp
                     scores.Add(maxScore);
 
                     classIds.Add(classId);
-                    Console.WriteLine("Class ID: " + classId);
 
 
                 }
@@ -235,14 +231,17 @@ namespace YoloCSharp
             var indices = DnnInvoke.NMSBoxes(boxes.ToArray(), scores.ToArray(), confidenceThres, iouThres);
 
             // Chuyển đổi chỉ số thành danh sách các hộp giới hạn
+
+            // Khởi tạo danh sách để lưu các hộp, điểm số, và ID lớp cuối cùng
             var finalBoxes = new List<Rectangle>();
             var finalScores = new List<float>();
             var finalClassIds = new List<int>();
+
+            // Duyệt qua các chỉ số sau NMS và thu thập thông tin
             foreach (var index in indices)
             {
                 if (index >= 0 && index < boxes.Count)  // Đảm bảo chỉ số hợp lệ
                 {
-                  
                     finalBoxes.Add(boxes[index]);
                     finalScores.Add(scores[index]);
                     finalClassIds.Add(classIds[index]);
