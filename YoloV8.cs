@@ -162,8 +162,8 @@ namespace YoloCSharp
         private void Postprocess(string imagePath, NDArray outputData, int imgWidth, int imgHeight, float confidenceThres, float iouThres, string outputImagePath)
         {
             // Tính toán hệ số tỷ lệ cho tọa độ hộp giới hạn
-            int inputWidth = 640; // Chiều rộng của ảnh đầu vào cho mô hình
-            int inputHeight = 640; // Chiều cao của ảnh đầu vào cho mô hình
+            int inputWidth = _modelInput[_modelInput.Count - 2]; // Chiều rộng của ảnh đầu vào cho mô hình
+            int inputHeight = _modelInput[_modelInput.Count - 1]; // Chiều cao của ảnh đầu vào cho mô hình
 
             float xFactor = (float)imgWidth / inputWidth;
             float yFactor = (float)imgHeight / inputHeight;
