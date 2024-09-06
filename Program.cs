@@ -7,13 +7,13 @@ class Program
     static void Main(string[] args)
     {
         // Đường dẫn tới mô hình ONNX
-        string modelPath = "G:\\HaiSon\\YoloC#\\dhsoncoder\\YoloCsharp\\bin\\cotdien.onnx";
+        string modelPath = "path_to_model";
         // Đường dẫn tới ảnh đầu vào
-        string imagePath = "G:\\HaiSon\\YoloC#\\dhsoncoder\\YoloCsharp\\bin\\anhcd.JPG";
+        string imagePath = "path_to_input_image";
         // Đường dẫn tới ảnh đầu ra
-        string outputImagePath = "G:\\HaiSon\\YoloC#\\dhsoncoder\\YoloCsharp\\bin\\output_ok.jpg";
+        string outputImagePath = "path_to_output_image";
 
-        string yamlFilePath = "G:\\HaiSon\\YoloC#\\dhsoncoder\\YoloCsharp\\bin\\cotdien.yaml"; ;
+        string yamlFilePath = "path_to_yaml"; ;
 
         // Tạo một instance của YoloV8
         var predictor = new YoloV8(modelPath,yamlFilePath);
