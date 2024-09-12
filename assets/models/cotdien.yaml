@@ -1,0 +1,10 @@
+
+nc: 8
+names: [ 'chuoi_cach_dien', 'chuoi_cach_dien_hong','khoa_neo','khung_dinh_vi','ta_chong_rung',  'tru_su',  'vong_corona',  'vong_corora']
+
+roboflow:
+  workspace: wru
+  project: nothing-hnnir
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/wru/nothing-hnnir/dataset/1
